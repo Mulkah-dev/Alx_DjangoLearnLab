@@ -1,0 +1,1 @@
+A Django project for a library management.
