@@ -8,7 +8,7 @@ from .models import Library
 def book_list(request):
     books = Book.objects.all()
 
-    context = {'book_list': books}
+    context = {'list_books': books}
     return render(request, 'relationship_app/list_books.html', context)
 
 #class based model
