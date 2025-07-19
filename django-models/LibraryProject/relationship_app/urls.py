@@ -16,10 +16,16 @@ Including another URLconf
 """
 #from django.contrib import admin
 from django.urls import path
-from .views import list_books, LibraryDetailView
+from .views import book_list, LibraryDetailView
+from django.contrib.auth import views as auth_views
+from . import views  # for custom registration view
 
 urlpatterns = [
-    path('book/', list_books, name='book-list'),
+    path('book/', book_list, name='book-list'),
     path('library/<int:pk>/', LibraryDetailView.as_view(), name='library-detail'),
+    # Auth views
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('register/', views.register, name='register'),
 ]
 
