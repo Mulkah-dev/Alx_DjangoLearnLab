@@ -26,6 +26,8 @@ class BookDetailView(DetailView):
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import permission_required
+
 
 def register(request):
     if request.method == 'POST':
@@ -38,4 +40,14 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
+@permission_required("relationship_app.can_add_book", raise_exception= True)
+def my_view(request):
+    return render(request, 'add_book.html')
 
+@permission_required("relationship_app.can_change_book", raise_exception= True)
+def my_view(request):
+    return render(request, 'change_book.html')
+
+@permission_required("relationship_app.can_delete_book", raise_exception= True)
+def my_view(request):
+    return render(request, 'delete_book.html')
