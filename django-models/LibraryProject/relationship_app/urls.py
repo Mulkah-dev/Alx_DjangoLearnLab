@@ -20,6 +20,7 @@ from .views import book_list, LibraryDetailView
 from django.contrib.auth import views as auth_views
 from . import views  # for custom registration view
 from .views import can_add_book, can_change_book, can_delete_book
+from .views import admin_view, librarian_view, member_view
 
 urlpatterns = [
     path('book/', book_list, name='book-list'),
@@ -32,5 +33,8 @@ urlpatterns = [
     path('add_book/', can_add_book, name='add-book'),
     path('edit_book/<int:book_id>/edit/', can_change_book, name='edit-book'),
     path('delete_book/<int:book_id>/delete/', can_delete_book, name='delete-book'),
+     path('admin-role/', admin_view, name='admin_view'),
+    path('librarian-role/', librarian_view, name='librarian_view'),
+    path('member-role/', member_view, name='member_view'),
 ]
 
