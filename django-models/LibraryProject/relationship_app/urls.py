@@ -30,7 +30,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     # Book permissions
     path('add_book/', can_add_book, name='add-book'),
-    path('change_book/<int:book_id>/edit/', can_change_book, name='edit-book'),
+    path('edit_book/<int:book_id>/edit/', can_change_book, name='edit-book'),
     path('delete_book/<int:book_id>/delete/', can_delete_book, name='delete-book'),
 ]
 
