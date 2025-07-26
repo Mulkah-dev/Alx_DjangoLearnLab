@@ -111,3 +111,4 @@ SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
 X_FRAME_OPTIONS = 'DENY'            # Protect against clickjacking
 SECURE_BROWSER_XSS_FILTER = True    # Enable XSS filter in browsers
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
