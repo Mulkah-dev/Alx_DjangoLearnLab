@@ -92,4 +92,22 @@ CSRF_COOKIE_SECURE = True
 # Prevent XSS attacks
 SECURE_BROWSER_XSS_FILTER = True
 
-# Prevent MIME-type
+# ✅ Security Settings for HTTPS
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True  # Required for HTTPS enforcement
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Cookies sent only over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Secure HTTP Headers
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent content type sniffing
+X_FRAME_OPTIONS = 'DENY'            # Protect against clickjacking
+SECURE_BROWSER_XSS_FILTER = True    # Enable XSS filter in browsers
+
