@@ -37,7 +37,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Book
-from .forms import BookForm  # ✅ Using the ModelForm for security
+from .forms import BookForm, ExampleForm  # ✅ Using the ModelForm for security
 
 # ✅ Create Book View (safe input handling)
 @permission_required('bookshelf.can_create_book', raise_exception=True)
