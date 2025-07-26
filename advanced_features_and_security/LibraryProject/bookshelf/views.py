@@ -37,8 +37,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import permission_required
 from .models import Book
-from .forms import BookForm, ExampleForm  # ✅ Using the ModelForm for security
-
+from .forms import BookForm  # ✅ Using the ModelForm for security
+from .forms import ExampleForm
 # ✅ Create Book View (safe input handling)
 @permission_required('bookshelf.can_create_book', raise_exception=True)
 def create_book(request):
@@ -77,3 +77,7 @@ def delete_book(request, book_id):
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+def example_form_view(request):
+    form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})
