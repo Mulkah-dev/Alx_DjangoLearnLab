@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render
+from django.contrib.auth.decorators import permission_required
 
+from .models import Library
 # Create your views here.
 from .models import Book
 from .models import Library
@@ -24,6 +26,12 @@ class BookDetailView(DetailView):
         context['books'] = Library.books.all()
         return context
     
+class LibraryDetailView(DetailView):
+    model = Library
+    template_name = 'relationship_app/library_detail.html'  # or your path
+    context_object_name = 'library'
+
+    
 #User registration
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -42,16 +50,16 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
 
-@permission_required("relationship_app.can_add_book", raise_exception= True)
-def my_view(request):
+@permission_required("relationship_app.can_add_book", raise_exception=True)
+def can_add_book(request):
     return render(request, 'add_book.html')
 
-@permission_required("relationship_app.can_change_book", raise_exception= True)
-def my_view(request):
+@permission_required("relationship_app.can_change_book", raise_exception=True)
+def can_change_book(request):
     return render(request, 'change_book.html')
 
-@permission_required("relationship_app.can_delete_book", raise_exception= True)
-def my_view(request):
+@permission_required("relationship_app.can_delete_book", raise_exception=True)
+def can_delete_book(request):
     return render(request, 'delete_book.html')
 
 # Helper functions to check user role

@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from .models import CustomUser
-# Register your models here.
+from django.contrib.auth import get_user_model  # ✅ New import
+
 from .models import Book
 
-#admin.site.register(Book)
+CustomUser = get_user_model()  # ✅ Replace direct model import
 
 class BookAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'publication_year')

@@ -1,16 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
+#from bookshelf.models import CustomUser
 # Create your models here.
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.TextField(max_length=100)
     publication_year = models.IntegerField()
 
+    class Meta:
+        permissions = [
+            ("can_view_book", "Can view book"),
+            ("can_create_book", "Can create book"),
+            ("can_edit_book", "Can edit book"),
+            ("can_delete_book", "Can delete book"),
+        ]
     def __str__(self):
         return self.title
 
-
+    
 # Roles
 ROLE_CHOICES = (
     ('Admin', 'Admin'),
@@ -50,7 +57,7 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
-        return self.create_user(username, email, role='Admin', password=password, **extra_fields)
+        return self.create_user(username, email, password=password, **extra_fields)
 
 # === Custom User Model ===
 class CustomUser(AbstractUser):
@@ -62,3 +69,4 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
