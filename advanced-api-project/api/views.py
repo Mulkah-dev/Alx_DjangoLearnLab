@@ -1,48 +1,62 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
 
-# ----- Generic CRUD Views with expected names -----
+# ----- Generic CRUD Views with filtering, searching, and ordering -----
 
-class ListView(generics.ListAPIView):
-    """Retrieve a list of all books."""
+class BookListView(generics.ListAPIView):
+    """Retrieve a list of all books, with filtering, searching, and ordering."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
+
+    # Enable filtering, searching, and ordering
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+
+    # Exact match filtering
+    filterset_fields = ['title', 'author', 'publication_year']
+
+    # Partial match searching (use 'author' if it's a CharField, 'author__name' if ForeignKey)
+    search_fields = ['title', 'author__name']
+
+    # Sorting
+    ordering_fields = ['title', 'publication_year', 'author__name']
+    ordering = ['title']  # Default ordering
 
 
-class DetailView(generics.RetrieveAPIView):
+class BookDetailView(generics.RetrieveAPIView):
     """Retrieve a single book by its ID."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class CreateView(generics.CreateAPIView):
+class BookCreateView(generics.CreateAPIView):
     """Create a new book (auth required)."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
 
-class UpdateView(generics.UpdateAPIView):
+class BookUpdateView(generics.UpdateAPIView):
     """Update an existing book (auth required)."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
 
-class DeleteView(generics.DestroyAPIView):
+class BookDeleteView(generics.DestroyAPIView):
     """Delete a book (auth required)."""
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
 
-# ----- Your no-PK update/delete endpoints -----
+# ----- No-PK update/delete endpoints -----
 
 class BookUpdateNoPKView(generics.GenericAPIView):
     serializer_class = BookSerializer
