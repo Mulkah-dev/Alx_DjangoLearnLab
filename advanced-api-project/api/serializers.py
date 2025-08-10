@@ -4,9 +4,10 @@ import datetime
 
 # Serializes Book model fields and validates publication_year
 class BookSerializer(serializers.ModelSerializer):
+    author_name = serializers.CharField(source='author.name', read_only=True)
     class Meta:
         model = Book
-        fields = ['id', 'title', 'publication_year', 'author']
+        fields = ['id', 'title', 'publication_year', 'author', 'author_name']
 
     def validate_publication_year(self, value):
         """Ensure publication_year is not in the future."""
