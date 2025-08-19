@@ -14,9 +14,10 @@ from django.views.generic import (
     DeleteView
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 from django.urls import reverse_lazy, reverse
+from django.db.models import Q
 
 def register(request):
     if request.method == 'POST':
@@ -154,19 +155,21 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()
-# @login_required
-# def add_comment(request, pk):
-#     post = get_object_or_404(Post, pk=pk)
-    
-#     if request.method == 'POST':
-#         form = CommentForm(request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.post = post
-#             comment.author = request.user
-#             comment.save()
-#             return redirect('post-detail', pk=post.pk)
-#     else:
-#         form = CommentForm()
-    
-    # return render(request, 'blog/add_comment.html', {'form': form})  
+
+def post_search(request):
+    query = request.GET.get('q')
+    results = Post.objects.all()
+
+    if query:
+        results = results.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)   # works if using your custom Tag model
+        ).distinct()
+
+    return render(request, 'blog/post_search.html', {'results': results, 'query': query})
+
+def posts_by_tag(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    posts = Post.objects.filter(tags=tag)
+    return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})

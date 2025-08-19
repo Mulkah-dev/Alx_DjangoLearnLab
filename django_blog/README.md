@@ -167,6 +167,66 @@ For your own comments, you’ll see Edit and Delete options.
 
 Click Edit to update, or Delete to remove your comment.
 
+📘 Blog Feature Documentation
+🏷️ Tagging System
+Adding Tags
 
+When creating or editing a post, you can add tags in the Tags field.
+
+Enter multiple tags separated by commas (e.g., django, python, backend).
+
+If a tag does not already exist, it will be automatically created.
+
+Viewing Tags
+
+On the Post Detail Page, all tags associated with the post will be displayed.
+
+Clicking a tag will show all posts that share the same tag.
+
+Example: Clicking on the tag django will navigate to:
+
+/tag/django/
+
+
+and display all posts with that tag.
+
+🔍 Search Functionality
+Using the Search Bar
+
+A search bar is available on the blog (usually in the navigation or post list page).
+
+You can search by:
+
+Title of the post
+
+Content of the post
+
+Tags associated with the post
+
+Example Searches
+
+Searching for "django" will return:
+
+Posts with "django" in the title
+
+Posts containing "django" in the content
+
+Posts tagged with "django"
+
+Edge Cases
+
+If no posts match your search query, a “No posts found” message will be displayed.
+
+Search is case-insensitive ("Django" = "django").
+
+✅ Testing the Features
+
+Create a post with tags.
+
+Click the tags to view filtered posts.
+
+Use the search bar to query by keyword or tag.
+
+Confirm results display correctly or a "No posts found" message if no matches exist.
 
 

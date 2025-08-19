@@ -9,4 +9,10 @@
         <a href="{% url 'post-detail' object.id %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+<div class="form-group">
+    {{ form.new_tags.label_tag }}
+    {{ form.new_tags }}
+    <small class="form-text text-muted">{{ form.new_tags.help_text }}</small>
+</div>
+
 {% endblock %}

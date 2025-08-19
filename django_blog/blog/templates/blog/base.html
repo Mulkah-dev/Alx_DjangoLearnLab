@@ -26,6 +26,10 @@
     {% endif %}
 
     <!-- Page content goes here -->
+    <form method="GET" action="{% url 'post-search' %}">
+    <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+</form>
     <div class="content">
         {% block content %}{% endblock %}
     </div>
