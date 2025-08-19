@@ -106,11 +106,66 @@ django_blog/
 * Ensure only the **post author** can edit/delete their own posts.
 * Test navigation links between pages (list → detail → edit/delete).
 
----
+📝 Comment System Documentation
+Overview
 
+The Comment System allows authenticated users to add, edit, and delete comments on blog posts. Each comment is linked to a specific blog post and a user account.
 
+Features
 
----
+Add Comment: Logged-in users can submit a comment on a post detail page.
+
+Edit Comment: Users can edit their own comments.
+
+Delete Comment: Users can delete their own comments.
+
+View Comments: All visitors (authenticated or not) can view comments under a blog post.
+
+Permissions
+
+Only logged-in users can add, edit, or delete comments.
+
+Users can only edit or delete comments they authored.
+
+Superusers can manage all comments if needed.
+
+URL Endpoints
+
+POST /posts/<post_id>/comments/new/ → Add a comment
+
+POST /comments/<int:pk>/edit/ → Edit a comment
+
+POST /comments/<int:pk>/delete/ → Delete a comment
+
+Data Model
+
+Post → has many Comments
+
+Comment → belongs to one Post, belongs to one User
+
+Fields in Comment model:
+
+post: ForeignKey → Post
+
+author: ForeignKey → User
+
+content: TextField
+
+created_at: DateTimeField (auto_now_add)
+
+updated_at: DateTimeField (auto_now)
+
+How to Use
+
+Navigate to a blog post detail page.
+
+Scroll to the Comments Section.
+
+Add a comment using the form (if logged in).
+
+For your own comments, you’ll see Edit and Delete options.
+
+Click Edit to update, or Delete to remove your comment.
 
 
 
