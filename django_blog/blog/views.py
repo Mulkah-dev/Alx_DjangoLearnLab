@@ -14,7 +14,7 @@ from django.views.generic import (
     DeleteView
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post, Comment, Tag
+from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q
