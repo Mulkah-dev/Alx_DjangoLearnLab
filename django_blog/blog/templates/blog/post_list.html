@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">All Blog Posts</h2>
+    {% for post in object_list %}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                </h4>
+                <p class="card-text">
+                    {{ post.content|truncatewords:25 }}
+                </p>
+                <small class="text-muted">By {{ post.author }} | {{ post.date_posted|date:"M d, Y" }}</small>
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts available yet. <a href="{% url 'post-create' %}">Create one!</a></p>
+    {% endfor %}
+</div>
+{% endblock %}
