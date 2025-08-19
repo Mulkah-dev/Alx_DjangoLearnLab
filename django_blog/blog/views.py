@@ -126,48 +126,34 @@ class PostDetailView(DetailView):
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
-    template_name = 'comments/comment_form.html'
+    template_name = 'blog/comment_form.html'
 
     def form_valid(self, form):
-        # attach logged in user and post to comment
         form.instance.author = self.request.user
-        post = get_object_or_404(Post, pk=self.kwargs['pk'])
-        form.instance.post = post
+        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
         return super().form_valid(form)
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'blog/comment_form.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author
 
     def get_success_url(self):
         return self.object.post.get_absolute_url()
-
-
-# --- Comment Update ---
-class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Comment
-    form_class = CommentForm
-    template_name = "blog/comment_form.html"
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def test_func(self):
-        comment = self.get_object()
-        return self.request.user == comment.author
-
-    def get_success_url(self):
-        return reverse("post-detail", kwargs={"pk": self.object.post.pk})
-
-# --- Comment Delete ---
-class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Comment
-    template_name = "blog/comment_confirm_delete.html"
-
-    def get_success_url(self):
-        return reverse_lazy("post-detail", kwargs={"pk": self.object.post.pk})
-
-    def test_func(self):
-        comment = self.get_object()
-        return self.request.user == comment.author
-    
 # @login_required
 # def add_comment(request, pk):
 #     post = get_object_or_404(Post, pk=pk)
