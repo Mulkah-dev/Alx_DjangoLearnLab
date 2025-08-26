@@ -1,6 +1,5 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
 
 # --------------------
@@ -13,13 +12,8 @@ class UserRegistrationView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-
-        # Create a token for the user
-        token, _ = Token.objects.get_or_create(user=user)
-        data = serializer.data
-        data['token'] = token.key  # attach token to response
-
-        return Response(data, status=status.HTTP_201_CREATED)
+        # The serializer already attached the token
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # --------------------
@@ -31,12 +25,15 @@ class UserLoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # Token is already attached in serializer.validated_data
         user = serializer.validated_data['user']
-
-        # Generate or get token
-        token, _ = Token.objects.get_or_create(user=user)
+        token = serializer.validated_data['token']
 
         return Response({
+            'id': user.id,
             'username': user.username,
-            'token': token.key
+            'email': user.email,
+            'bio': getattr(user, 'bio', ''),
+            'profile_picture': getattr(user, 'profile_picture', None),
+            'token': token
         }, status=status.HTTP_200_OK)
