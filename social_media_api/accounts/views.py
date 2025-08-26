@@ -1,15 +1,10 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework import generics, permissions, status
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
-from .models import CustomUser
 
 # --------------------
-# Registration View
+# User Registration View
 # --------------------
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -17,26 +12,31 @@ class UserRegistrationView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()  # creates token in serializer
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+
+        # Create a token for the user
+        token, _ = Token.objects.get_or_create(user=user)
+        data = serializer.data
+        data['token'] = token.key  # attach token to response
+
+        return Response(data, status=status.HTTP_201_CREATED)
 
 
 # --------------------
-# Login View
+# User Login View
 # --------------------
-class UserLoginView(APIView):
-    permission_classes = [permissions.AllowAny]
-    
-    def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
+class UserLoginView(generics.GenericAPIView):
+    serializer_class = UserLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data)
+        user = serializer.validated_data['user']
 
-class UserProfileView(generics.RetrieveUpdateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserRegistrationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        # Generate or get token
+        token, _ = Token.objects.get_or_create(user=user)
 
-    def get_object(self):
-        # Return the currently authenticated user
-        return self.request.user
+        return Response({
+            'username': user.username,
+            'token': token.key
+        }, status=status.HTTP_200_OK)
