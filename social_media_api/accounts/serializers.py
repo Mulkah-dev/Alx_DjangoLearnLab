@@ -16,7 +16,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture', 'token')
 
     def create(self, validated_data):
-        # Create the user using the model's manager
+        # Create the user using create_user (handles password hashing)
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
@@ -28,7 +28,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         # Create a token for the user
         token = Token.objects.create(user=user)
 
-        # Attach token to the user instance so it is returned in the serializer data
+        # Attach token to user instance so it's included in serializer output
         user.token = token.key
         return user
 
