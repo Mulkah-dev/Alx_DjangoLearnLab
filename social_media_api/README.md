@@ -206,3 +206,11 @@ Response:
   }
 ]
 
+POST /posts/<pk>/like/
+→ Like a post. Returns {"detail": "Post liked."}
+
+POST /posts/<pk>/unlike/
+→ Unlike a post. Returns {"detail": "Post unliked."}
+
+GET /notifications/
+→ Returns list of user’s notifications.
