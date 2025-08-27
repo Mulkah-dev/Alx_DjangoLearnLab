@@ -3,7 +3,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import (
+    UserRegistrationSerializer,
+    UserLoginSerializer,
+    UserSerializer
+)
 
 User = get_user_model()
 
@@ -53,6 +57,10 @@ class LoginView(APIView):
             "token": token
         }, status=status.HTTP_200_OK)
 
+
+# --------------------
+# Follow / Unfollow Views
+# --------------------
 class FollowUserView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -83,3 +91,17 @@ class UnfollowUserView(APIView):
 
         request.user.following.remove(target_user)
         return Response({"message": f"You have unfollowed {target_user.username}"}, status=status.HTTP_200_OK)
+
+
+# --------------------
+# User List View
+# --------------------
+class UserListView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        users = self.get_queryset()
+        serializer = self.get_serializer(users, many=True)
+        return Response(serializer.data)
