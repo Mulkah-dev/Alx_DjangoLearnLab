@@ -178,3 +178,31 @@ Example response
   "comments": []
 }
 
+Follow User
+POST /accounts/follow/2/
+Authorization: Token <token>
+
+
+Response:
+
+{"message": "You are now following maryam"}
+
+Feed
+GET /api/feed/
+Authorization: Token <token>
+
+
+Response:
+
+[
+  {
+    "id": 5,
+    "title": "My Day",
+    "content": "Had a great time coding!",
+    "author": "maryam",
+    "created_at": "2025-08-27T12:30:00Z",
+    "updated_at": "2025-08-27T12:30:00Z",
+    "comments": []
+  }
+]
+

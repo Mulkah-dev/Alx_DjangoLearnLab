@@ -27,5 +27,13 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
     )
 
+    following = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followers',
+        blank=True
+    )
+
     def __str__(self):
         return self.username
+    
