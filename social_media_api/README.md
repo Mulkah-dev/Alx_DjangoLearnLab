@@ -158,3 +158,23 @@ You can use **Postman** or **cURL** to test registration and login endpoints. Ma
 ```bash
 python manage.py migrate
 
+Example request:create post
+POST /api/posts/
+Authorization: Token <your_token>
+Content-Type: application/json
+
+{
+  "title": "My first post",
+  "content": "This is my content"
+}
+Example response
+{
+  "id": 1,
+  "title": "My first post",
+  "content": "This is my content",
+  "author": "maryam",
+  "created_at": "2025-08-27T12:00:00Z",
+  "updated_at": "2025-08-27T12:00:00Z",
+  "comments": []
+}
+
