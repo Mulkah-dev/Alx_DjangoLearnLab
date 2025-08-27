@@ -16,45 +16,21 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture', 'token')
 
     def create(self, validated_data):
-        # Create the user using create_user (handles password hashing)
+        # ✅ Only pass allowed fields into create_user
         user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
-            password=validated_data['password'],
-            bio=validated_data.get('bio', ''),
-            profile_picture=validated_data.get('profile_picture', None)
+            password=validated_data['password']
         )
 
-        # Create a token for the user
+        # ✅ Handle custom fields separately
+        user.bio = validated_data.get('bio', '')
+        user.profile_picture = validated_data.get('profile_picture', None)
+        user.save()
+
+        # ✅ Generate token
         token = Token.objects.create(user=user)
 
-        # Attach token to user instance so it's included in serializer output
+        # Attach token to serializer response
         user.token = token.key
         return user
-
-
-# --------------------
-# Login Serializer
-# --------------------
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
-    token = serializers.CharField(read_only=True)
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if not user:
-                raise serializers.ValidationError("Invalid credentials.")
-
-            # Generate or get token
-            token, created = Token.objects.get_or_create(user=user)
-            data['token'] = token.key
-            data['user'] = user
-        else:
-            raise serializers.ValidationError("Must provide username and password.")
-
-        return data
