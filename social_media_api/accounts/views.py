@@ -2,7 +2,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
-
+from .models import CustomUser
 from .serializers import (
     UserRegistrationSerializer,
     UserLoginSerializer,
@@ -97,7 +97,7 @@ class UnfollowUserView(APIView):
 # User List View
 # --------------------
 class UserListView(generics.GenericAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()   # 👈 changed from User to CustomUser
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
