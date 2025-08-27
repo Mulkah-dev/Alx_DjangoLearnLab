@@ -16,21 +16,46 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture', 'token')
 
     def create(self, validated_data):
-        # ✅ Only pass allowed fields into create_user
-        user = User.objects.create_user(
+        # ✅ Explicitly use get_user_model().objects.create_user
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data.get('email', ''),
             password=validated_data['password']
         )
 
-        # ✅ Handle custom fields separately
+        # Assign custom fields
         user.bio = validated_data.get('bio', '')
         user.profile_picture = validated_data.get('profile_picture', None)
         user.save()
 
-        # ✅ Generate token
+        # Generate token
         token = Token.objects.create(user=user)
+        user.token = token.key  # add token dynamically for response
 
-        # Attach token to serializer response
-        user.token = token.key
         return user
+
+
+# --------------------
+# Login Serializer
+# --------------------
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    token = serializers.CharField(read_only=True)
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise serializers.ValidationError("Invalid credentials.")
+
+            token, created = Token.objects.get_or_create(user=user)
+            data['token'] = token.key
+            data['user'] = user
+        else:
+            raise serializers.ValidationError("Must provide username and password.")
+
+        return data
